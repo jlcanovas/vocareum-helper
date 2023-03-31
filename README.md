@@ -39,18 +39,11 @@ FILES = [
     'asnlib/public/docs/README.html',
     'asnlib/public/test.py',
     'asnlib/public/validator.py',
-    'lib/InsertaCodi.class',
-    'lib/InsertaCodi.java',
-    'lib/duplicate.sh',
-    'lib/duplicatePython.sh',
-    'lib/public/InsertaCodi.class',
-    'lib/public/validators/customValidation.py',
     'scripts/build.sh',
     'scripts/grade.sh',
     'scripts/run.sh',
     'scripts/submit.sh',
-    'starter_code/exercise.py',
-    'work/exercise.py'
+    'startercode/exercise.py',
 ]
 ```
 

@@ -65,30 +65,37 @@ def extract(course_id, target):
 
     url = URL + "/" + course_id + '/assignments'
     r_assignments = requests.get(url, headers=AUTH)
-    for assigment in r_assignments.json()['assignments']:
-        assignment_id = assigment['id']
-        assignment_name = assigment['name']
-        print(f'Found assignment {assignment_id} {assignment_name}')
+    while len(r_assignments.json()['assignments']) > 0:
+        for assigment in r_assignments.json()['assignments']:
+            assignment_id = assigment['id']
+            assignment_name = assigment['name']
+            print(f'Found assignment {assignment_id} {assignment_name}')
 
-        url_part = f'{URL}/{course_id}/assignments/{assignment_id}/parts'
-        r_parts = requests.get(url_part, headers=AUTH)
-        for part in r_parts.json()["parts"]:
-            part_id = part['id']
-            part_name = part['name']
-            print(f'   Found part {part_id} {part_name}')
+            url_part = f'{URL}/{course_id}/assignments/{assignment_id}/parts'
+            r_parts = requests.get(url_part, headers=AUTH)
+            for part in r_parts.json()["parts"]:
+                part_id = part['id']
+                part_name = part['name']
+                print(f'   Found part {part_id} {part_name}')
 
-            for file in FILES:
-                url_file = f'{URL}/{course_id}/assignments/{assignment_id}/parts/{part_id}/files?filename={file}'
-                r_file = requests.get(url_file, headers=AUTH)
-                if 'files' in r_file.json() and len(r_file.json()['files']) > 0 and r_file.json()['files'][0]['filename'] == file and "does not exist" not in r_file.json()['files'][0]["download_url"]:
-                    url_download = r_file.json()['files'][0]['download_url']
-                    r_download = requests.get(url_download, allow_redirects=True)
-                    target_path = f'{target}/{course_name}/{sanitize_str(assignment_name)}/{sanitize_str(part_name)}/{file}'
-                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
-                    open(target_path, 'wb').write(r_download.content)
-                    print(f'      {file} found and copied')
-                else:
-                    print(f'      {file} NOT FOUND')
+                for file in FILES:
+                    url_file = f'{URL}/{course_id}/assignments/{assignment_id}/parts/{part_id}/files?filename={file}'
+                    r_file = requests.get(url_file, headers=AUTH)
+                    if 'files' in r_file.json() and len(r_file.json()['files']) > 0 and r_file.json()['files'][0]['filename'] == file and "does not exist" not in r_file.json()['files'][0]["download_url"]:
+                        url_download = r_file.json()['files'][0]['download_url']
+                        r_download = requests.get(url_download, allow_redirects=True)
+                        target_path = f'{target}/{course_name}/{sanitize_str(assignment_name)}/{sanitize_str(part_name)}/{file}'
+                        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                        open(target_path, 'wb').write(r_download.content)
+                        print(f'      {file} found and copied')
+                    else:
+                        sub_path = '/'.join(file.split('/')[:-1])
+                        target_path = f'{target}/{course_name}/{sanitize_str(assignment_name)}/{sanitize_str(part_name)}/{sub_path}'
+                        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                        print(f'      {file} NOT FOUND')
+        page += 1
+        url = URL + "/" + course_id + '/assignments' + '?page=' + str(page)
+        r_assignments = requests.get(url, headers=AUTH)
 
 
 if __name__ == "__main__":
