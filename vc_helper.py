@@ -16,18 +16,18 @@ FILES = [
     'asnlib/public/docs/README.html',
     'asnlib/public/test.py',
     'asnlib/public/validator.py',
-    'lib/InsertaCodi.class',
-    'lib/InsertaCodi.java',
-    'lib/duplicate.sh',
-    'lib/duplicatePython.sh',
-    'lib/public/InsertaCodi.class',
-    'lib/public/validators/customValidation.py',
+    #'lib/InsertaCodi.class', # The API does not seem to give access to this file
+    #'lib/InsertaCodi.java',
+    #'lib/duplicate.sh',
+    #'lib/duplicatePython.sh',
+    #'lib/public/InsertaCodi.class',
+    #'lib/public/validators/customValidation.py',
     'scripts/build.sh',
     'scripts/grade.sh',
     'scripts/run.sh',
     'scripts/submit.sh',
     'starter_code/exercise.py',
-    'work/exercise.py'
+    #'work/exercise.py' # The API does not seem to give access to this file
 ]
 
 def sanitize_str(str):
