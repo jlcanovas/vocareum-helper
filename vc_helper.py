@@ -1,6 +1,10 @@
 import requests
 import os
 import sys
+import json
+import glob
+from zipfile import ZipFile
+import base64
 
 # The script looks for the TOKEN file in the current directory
 # The file must include the token from vocareum in the first line
@@ -40,14 +44,14 @@ def sanitize_str(str):
 
 def list_courses():
     """
-    Liss all the courses available to the user identified by the token
+    Lits all the courses available to the user identified by the token
     """
     url = URL
     r = requests.get(url, headers=AUTH)
     for course in r.json()['courses']:
         print(f'{course["id"]:10} {course["name"]}')
 
-def extract(course_id, target):
+def download(course_id, target):
     """
     Extract the files defined in FILES from the course identified by course_id
     to the target folder. The target folder will follow the same structure as
@@ -97,14 +101,52 @@ def extract(course_id, target):
         url = URL + "/" + course_id + '/assignments' + '?page=' + str(page)
         r_assignments = requests.get(url, headers=AUTH)
 
+def zip_and_encode_folder(folder):
+    """
+    Prepares a zip file with the content of the folder and returns the base64
+    """
+    files = glob.glob(folder + "/**", recursive=True)
+    files = [f for f in files if os.path.isfile(f)]
+    files_zip = [f[len(folder)+1:] for f in files]
+    with ZipFile("tmp.zip", "w") as zipfile:
+        for file, file_zip in zip(files, files_zip):
+            zipfile.write(file, file_zip)
+    with open("tmp.zip", "rb") as file:
+        return base64.b64encode(file.read()).decode("utf-8")
+
+def upload(course_id, assignment_id, part_id, target, source):    
+    """
+    Given a course, an assignment and a part, uploads the content of the source folder to target folder
+    """
+    data = {}
+    data['update'] = 1 # 0 (default) | 1 - update the part (i.e., release the code to students )
+    content_dict = {}
+    content_dict['target'] = target
+    content_dict['zipcontent'] = zip_and_encode_folder(source)
+    data['content'] = [content_dict]
+    url = f'{URL}/{course_id}/assignments/{assignment_id}/parts/{part_id}'
+    data_string = json.dumps(data, indent = 4)
+    r_put = requests.put(url, data = data_string, headers=AUTH)
+    print(r_put.json())
+
 
 if __name__ == "__main__":
+    print(sys.argv, len(sys.argv))
     if sys.argv[1] == '-l':
         list_courses()
-    elif len(sys.argv) == 5 and sys.argv[1] == '-e' and sys.argv[3] == '-t':
+    elif len(sys.argv) == 5 and sys.argv[1] == '-d' and sys.argv[3] == '-t':
         course_id = sys.argv[2]
         target_path = sys.argv[4]
-        extract(course_id, target_path)
+        download(course_id, target_path)
+    elif len(sys.argv) == 11 and sys.argv[1] == '-u' and sys.argv[3] == '-a' and sys.argv[5] == '-p' and sys.argv[7] == '-t' and sys.argv[9] == '-s':
+        course_id = sys.argv[2]
+        assignment_id = sys.argv[4]
+        part_id = sys.argv[6]
+        target_folder = sys.argv[8]
+        source_folder = sys.argv[10]
+        upload(course_id, assignment_id, part_id, target_folder, source_folder)
     else:
-        print("Usage: python vc_helper.py -l | -e <course_id> -t <target_path>")
+        print("Usage: python vc_helper.py -l")
+        print("       python vc_helper.py -d <course_id> -t <target_path>")
+        print("       python vc_helper.py -u <course_id> -a <assignment_id> -p <part_id> -t <target_folder> -s <source_folder>")
         sys.exit(1)

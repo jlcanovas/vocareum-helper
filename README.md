@@ -18,21 +18,21 @@ This option lists the available courses visible to the user. The output follows 
 COURSE_ID: COURSE_NAME
 ```
 
-## Extracting the files into a directory
+## Download the files into a directory
 
-This option accesses to a given course and extracts the files into a given directory. 
+This option accesses to a given course and downloads the files into a given directory. 
 
 The options to given in the command line are:
-* `-e`: the course ID to extract (see `-l` option to know the available course ids)
+* `-d`: the course ID to extract (see `-l` option to know the available course ids)
 * `-t`: the target directory to extract the files
 
 The format will be:
 
 ```bash
-python vc_helper -e <course_id> -t <target_path>"
+python vc_helper -d <course_id> -t <target_path>"
 ```
 
-The set of files that are extracted are indicated in the `FILES` variable in the script, which currently cover the most important files (and others required in our courses) are:
+The set of files that are downloaded are indicated in the `FILES` variable in the script, which currently cover the most important files (and others required in our courses) are:
 
 ```python
 FILES = [
@@ -45,6 +45,25 @@ FILES = [
     'scripts/submit.sh',
     'startercode/exercise.py',
 ]
+```
+
+> Note: files in the `lib` and `work` folder does not seem to be accessible via the REST API.
+
+## Uplodaing files into a directory
+
+This option is still **under development**. It currently works when given a course, assignment, part and folder to upload.
+
+The options to given in the command line are:
+* `-u`: the course ID to extract (see `-l` option to know the available course ids)
+* `-a`: the assignment ID
+* `-p`: the part ID
+* `-t`: the target folder (`asnlib`, `lib`, `startercode`, `scripts`)
+* `-s`: the source folder to upload the files (all files in this folder will be uploaded)
+
+The format will be:
+
+```bash
+python vc_helper -u <course_id> -a <assignment_id> -p <part_id> -t <target_folder> -s <source_folder>"
 ```
 
 # Contributing
