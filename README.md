@@ -49,21 +49,18 @@ FILES = [
 
 > Note: files in the `lib` and `work` folder does not seem to be accessible via the REST API.
 
-## Uplodaing files into a directory
+## Uploading files into a part
 
-This option is still **under development**. It currently works when given a course, assignment, part and folder to upload.
+This option uploads previously downloaded files into a part. It works with the same options as the download option. Note that the structure of the files is expected to be the same as the one downloaded.
 
 The options to given in the command line are:
-* `-u`: the course ID to extract (see `-l` option to know the available course ids)
-* `-a`: the assignment ID
-* `-p`: the part ID
-* `-t`: the target folder (`asnlib`, `lib`, `startercode`, `scripts`)
-* `-s`: the source folder to upload the files (all files in this folder will be uploaded)
+* `-u`: the course ID to upload (see `-l` option to know the available course ids)
+* `-t`: the target directory to upload the files
 
 The format will be:
 
 ```bash
-python vc_helper -u <course_id> -a <assignment_id> -p <part_id> -t <target_folder> -s <source_folder>"
+python vc_helper -u <course_id> -t <target_path>"
 ```
 
 # Contributing
