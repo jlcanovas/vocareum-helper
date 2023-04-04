@@ -9,6 +9,13 @@ Once you have created the token, you need to create a file called `TOKEN` in the
 # The script `vc.py`
 
 This is the main script. The script currently has four main working modes: `list`, `init`, `download` and `upload`. 
+
+The standard usage of the script is:
+
+1. List the available courses with the `list` mode.
+2. Initialize the course with the `init` mode.
+3. Work on the files in the `TARGET_FOLDER` folder. Perform `download` and `upload` operations as needed.
+
 We explain how to use each mode in the following.
 
 ## `list` mode
