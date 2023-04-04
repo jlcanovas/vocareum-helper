@@ -51,7 +51,11 @@ FILES = [
 
 ## Uploading files into a part
 
-This option uploads previously downloaded files into a part. It works with the same options as the download option. Note that the structure of the files is expected to be the same as the one downloaded.
+This option uploads previously downloaded files into a part. It works with the same options as the download option. 
+
+> Note: The structure of the files is expected to be the same as the one downloaded.
+
+> Note: Due to restricions in the REST API, the files are uploaded according to the folders in the parts, with a delay of 15 seconds between uploads. This is to avoid the API to return an error.
 
 The options to given in the command line are:
 * `-u`: the course ID to upload (see `-l` option to know the available course ids)
